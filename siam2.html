@@ -1,0 +1,92 @@
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+	<style>
+	iframe {
+		height: 300px;
+		width: 100%;
+		margin-top: 7px;
+		margin-bottom: 15px;
+	}
+</style>
+</head>
+	
+	<body>
+<div class='container'>
+		<h1>Stitch in a Minute: Upserting Data to Atlas</h1>
+		<p>Let's update the <a href='siam1.html'>web page we used previously</a> to insert some data to the employee collection.</p>
+		<p>
+		Take a look at the following HTML page:
+		</p>
+		<pre class="prettyprint">
+&lt;html>
+  &lt;script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js">&lt;/script>
+  &lt;script>
+    const client = new stitch.StitchClient('stitchdocs-jdtdl');
+    const db = client.service('mongodb', 'mongodb-atlas').db('HR');
+
+    client.login().then(() =>
+      displayEmployees()
+    ).catch(err => {
+      console.error(err)
+    });
+
+  function displayEmployees() {
+//Insert a new employee
+    db.collection('employees').insertOne(
+      {
+        'name' : {'first' : 'Robert', 'last' : 'Zimmerman'}, 
+        'role' : 'Songwriter', 
+        'level' : 'Senior',
+        'email' : 'bobdylan@msc.co',
+        'salary' : (1000000 * Math.random()).toFixed(0)
+    }).then(()=>
+//Filter the find to return only employees with the same last name
+    db.collection('employees').find({'name.last' : 'Zimmerman'}).execute().then(docs => {
+      html = docs.map(e => '&lt;tr>&lt;td>' + e.name.last + ', ' + e.name.first + '&lt;/td>' +
+        '&lt;td>' + e.email + '&lt;/td>&lt;td>' + e.role + ' - ' + e.level + '&lt;/td>' +
+        '&lt;td>$' + e.salary + '&lt;/td>&lt;/tr>').join('');
+      document.getElementById('employees').innerHTML = html;
+    }));
+  }
+  &lt;/script>
+  &lt;body>
+    &lt;table>
+      &lt;thead>&lt;tr>&lt;th>Name&lt;/th>&lt;th>Email&lt;/th>&lt;th>Title&lt;/th>&lt;th>Salary&lt;/th>&lt;/tr>&lt;/thead>
+      &lt;tbody id='employees'>&lt;/tbody>
+    &lt;/table>
+  &lt;/body>
+&lt;/html>
+</pre>
+<p>This is the same page as our <a href='siam1.html'>previous example</a>, except:
+<ol>
+	<li>We're adding a new employee</li>
+	<li>We're showing only that employee in the result.</li>
+</ol>
+
+You can copy this code and paste it into an empty text file, and then save the file as an HTML file (for example, as "stitch.html"). When you open the file in a browser (with an internet connection), you will see a table that lists employees with the last name "Zimmerman", like this:</p>
+<div id='livepage'>
+<iframe src="./siam2_code.html"></iframe>
+</div>
+
+<p> Each time you refresh the page... </p>
+<div class="alert alert-danger" role="alert"><img src='./alert.ico' width='32px'/>You may have already noticed a major problem here:<br/> You are an <strong>anonymous user</strong> adding rather sensitive personal information to a remote database! By default, Stitch restricts what you can and can't do; we've overridden those rules to 
+keep this example as simple as possible. As you work through the <a href='#' class="alert-link">Stitch examples</a>, you'll learn about authentication and authorization.</div>
+<h2>What's next?</h2>
+<ul>
+<li>I want to learn more about MongoDB's CRUD operations.</li>
+<li>CRUD's easy; take me to the Authentication/Authorization stuff!</li>
+<li>I want to start playing with my own data now.</li>
+</ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+	</body>
+
+</html>
