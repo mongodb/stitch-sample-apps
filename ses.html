@@ -1,0 +1,119 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>MongoDB Stitch: Email Example</title>
+  <!-- Bootstrap  -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+    crossorigin="anonymous">
+  <style>
+    body {
+      margin: 50px 0 0 0;
+    }
+
+    #ses_form {
+      margin: 8px 0 0 0;
+    }
+  </style>
+</head>
+
+<body onload="displayLoggedOutState()">
+  <div class="container">
+    <div class="card bg-light" id="emailcard" style="width: 500px;">
+      <div class="card-body">
+        <!-- Authentication Controls -->
+        <span>
+          <button type="button" class="btn btn-dark btn-block" id="loginButton" onClick="login()">
+            Login
+          </button>
+        </span>
+        <span>
+          <button type="button" class="btn btn-dark btn-block" id="logoutButton" onClick="logout()">
+            Logout
+          </button>
+        </span>
+        <!-- SES Form -->
+        <form id="ses_form">
+          <div class="form-group">
+            <label for="subject">Subject:</label>
+            <input type="text" class="form-control" id="subject" placeholder="Check out MongoDB Stitch!" name="subject">
+          </div>
+          <div class="form-group">
+            <label for="body">Body:</label>
+            <textarea class="form-control" id="body" rows="8" name="body"></textarea>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" onClick="sendEmailToMongoDB(this.form.subject.value, this.form.body.value)">
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+  <!-- MongoDB Stitch -->
+  <script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"></script>
+  <!-- Custom Scripts -->
+  <script>
+    const stitchClient = new stitch.StitchClient('sampleone-mriot');
+
+    function displayLoggedInState() {
+      if (stitchClient.authedId()) {
+        $('#ses_form').show();
+        $('#loginButton').hide();
+        $('#logoutButton').show();
+      }
+    }
+
+    function displayLoggedOutState() {
+      if (!stitchClient.authedId()) {
+        $('#ses_form').hide();
+        $('#loginButton').show();
+        $('#logoutButton').hide();
+      } else {
+        displayLoggedInState()
+      }
+    }
+
+    function login() {
+      if (!stitchClient.authedId()) {
+        stitchClient.login()
+          .then(() => console.log('logged in as: ' + stitchClient.authedId()))
+          .then(() => displayLoggedInState())
+          .catch(e => console.log('error: ', e));
+      } else {
+        console.log('Already logged in:', stitchClient.authedId())
+      }
+    }
+
+    function logout() {
+      if (stitchClient.authedId()) {
+        stitchClient.logout()
+          .then(() => displayLoggedOutState())
+          .then(() => console.log('logged out!'))
+          .catch(e => console.log('error: ', e));
+      }
+    }
+
+    function sendEmailToMongoDB(subject, body) {
+      console.log(subject, body);
+      stitchClient.executeServiceFunction('email', 'send', {
+        "toAddress": "nick.larew@mongodb.com",
+        "body": body,
+        "fromAddress": "nlarew864@gmail.com",
+        "subject": subject
+      }).then(res => console.log('res;', res), err => console.log('err:', err))
+    }
+  </script>
+
+  <!-- Promise polyfill for older browsers -->
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+</body>
+</html>
