@@ -1,0 +1,131 @@
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+	<style>
+	iframe {
+		height: 300px;
+		width: 100%;
+		margin-top: 7px;
+		margin-bottom: 15px;
+	}
+</style>
+</head>
+	<body>
+<div class='container'>
+  <div class="alert alert-danger" role="alert"><img src='./alert.ico' width='32px'/>Currently broken; waiting for bug fix.</div>
+		<h1>Stitch in a Minute: Using Rules and Functions to Secure Data</h1>
+		<p>Let's update the web page we used in the <a href='siam-rules-1.html'>Rules example</a> to see how using Rules with Functions in Stitch enables you to customize the data returned.</p>
+		<p>
+		Take a look at the following HTML page:
+		</p>
+		<pre class="prettyprint">
+&lt;html>
+  &lt;script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js">&lt;/script>
+  &lt;script>
+    const client = new stitch.StitchClient('stitchdocs-jdtdl');
+    const db = client.service('mongodb', 'mongodb-atlas').db('HR');
+
+//1. Log on using email &amp; password security
+    client.login('dafu@bufudlur.et', 'sekritpwd').then(() =>
+      displayEmployees();
+    ).catch(err => {
+      console.error(err)
+    });
+
+  function displayEmployees() {
+//2. Note the collection name is now employees_secured2
+    db.collection('employees_secured2').find({}).sort({"name.last": 1}).execute().then(docs => {
+      html = docs.map(e => '&lt;tr>&lt;td>' + e.name.last + ', ' + e.name.first + '&lt;/td>' +
+        '&lt;td>' + e.email + '&lt;/td>&lt;td>' + e.role + ' - ' + e.level + '&lt;/td>' +
+        '&lt;td>$' + e.salary + '&lt;/td>&lt;/tr>').join('');
+      document.getElementById('employees').innerHTML = html;
+    });
+  }
+  &lt;/script>
+  &lt;body>
+    &lt;table>
+      &lt;thead>&lt;tr>&lt;th>Name&lt;/th>&lt;th>Email&lt;/th>&lt;th>Title&lt;/th>&lt;th>Salary&lt;/th>&lt;/tr>&lt;/thead>
+      &lt;tbody id='employees'>&lt;/tbody>
+    &lt;/table>
+  &lt;/body>
+&lt;/html>
+</pre>
+<p>This is the same page as our <a href='siam-crud-1.html'>Rules example</a>, except we are accessing a different collection, called <i>employees_secured2</i>. It has exactly the same data as the <i>employees_secured</i> collection, but has a different Top Level Document Rule.
+</ol>
+</p>
+<div id='livepage'>
+<iframe src="./siam-rules-2-code.html"></iframe>
+</div>
+<p>This view allows you to see the authenticated user's data, as well as all of her direct reports' data. We added a Top Level Document Rule to this collection that returns <b>true</b> if either of 2 conditions are met:
+<ul>
+  <li>The email used to authenticate matches the email in the document, or</li>
+  <li>the function <b>doesEmpReportTo</b> returns true.</li>
+</ul>
+Here's what that Rule looks like:
+</p>
+<pre class="prettyprint">
+  {
+  "%or": [
+    {
+      "%%true": {
+        "%function": {
+          "name": "doesEmpReportTo",
+          "args": [
+            "%%root.email"
+          ]
+        }
+      }
+    },
+    {
+      "%%root.email": "%%user.data.email"
+    }
+  ]
+}
+</pre>
+<p>Let's take a look at that function now:
+<pre class="prettyprint">  
+exports = function(empEmail) {
+  var atlas = context.services.get("mongodb-atlas");
+  var empCol = atlas.db("HR").collection("employees_secured2");
+
+  var manager = empCol.findOne({"email": context.user.data.email });
+  if (manager === undefined){
+    return false;
+  }
+
+  var isDirectReport = empCol.count({"email" : empEmail, "manager": manager._id});
+  if (isDirectReport > 0) return true;
+  return false;
+};
+</pre>
+Here's how it works: for each document in the collection, the Rule calls the Function, passing in the <i>document</i>.email value. That is, for each employee in the collection, the function is called with that employee's email (we could also use the ID or any other unique value).
+<p>
+Within the Function, the first two lines create the connection to the HR.employees_secured2 collection. We then find the document for the authenticated user, who we are calling a manager. If the manager is found, we then look at the current document to see if the <b>manager</b> propery's value matches the manager's ID, and if so, we return <b>true</b> for that document. Otherwise, we return false.
+</p>
+So, the logic flow is:
+<ol>
+<li>For each document in the collection, run the Function.</li>
+<li>Get the manager's ID by finding the document that matches the manager's email.</li>
+<li>Then ask, is this employee's manager the authenticed user? If so, return true.</li>
+</ol>
+</p>
+<div class="alert alert-danger" role="alert"><img src='./alert.ico' width='32px'/>If you call a Function from a Rule, it will iterate through <b>all of the documents in the collection</b>. We're OK here because we have a very small data set, but obviously this approach doesn't scale well.</div>
+<h2>What's next?</h2>
+<ul>
+<li>Can I have similar behavior without the performance cost?</li>
+<li>I want to see other examples of Stitch Functions</li>
+<li>I want to learn more about writing Stitch Functions.</li>
+<li>I want to start playing with my own data now.</li>
+</ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+	</body>
+
+</html>

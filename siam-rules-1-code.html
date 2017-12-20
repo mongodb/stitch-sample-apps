@@ -5,15 +5,15 @@
     const client = new stitch.StitchClient('stitchdocs-jdtdl');
     const db = client.service('mongodb', 'mongodb-atlas').db('HR');
 
-    client.login('<user-email>', '<user-password>').then((userId) =>
-      console.log(userId)
-      displayEmployees()
+    client.login('dafu@bufudlur.et', 'sekritpwd').then((userId) =>
+      {console.log(userId);
+      displayEmployees();}
     ).catch(err => {
       console.error(err)
     });
 
   function displayEmployees() {
-    db.collection('employees').find({}).sort({"name.last": 1}).execute().then(docs => {
+    db.collection('employees_secured').find({}).sort({"name.last": 1}).execute().then(docs => {
       html = docs.map(e => '<tr><td>' + e.name.last + ', ' + e.name.first + '</td>' +
         '<td>' + e.email + '</td><td>' + e.role + ' - ' + e.level + '</td><td>$' + 
         e.salary + '</td></tr>').join('');
