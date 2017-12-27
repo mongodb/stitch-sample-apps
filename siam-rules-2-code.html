@@ -6,9 +6,7 @@
     const db = client.service('mongodb', 'mongodb-atlas').db('HR');
 
     client.login('dafu@bufudlur.et', 'sekritpwd').then((userId) =>
-      {console.log(userId);
-      displayEmployees();}
-    ).catch(err => {
+      displayEmployees()).catch(err => {
       console.error(err)
     });
 
