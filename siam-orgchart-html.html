@@ -5,13 +5,17 @@
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<style>
-	
 	iframe {
 		height: 300px;
 		width: 100%;
 		margin-top: 7px;
 		margin-bottom: 15px;
 	}
+  .alerticon {
+   margin-left: -15px;
+   margin-right: 5px;
+   margin-top: -10px;
+  }
 </style>
 </head>
 	<body>
@@ -89,7 +93,7 @@ function getDirects(empCol, me) {
     <li>Return an HTML string that the page can display.
   </ol>
 </p>
-<div class="alert alert-info" role="alert"><img src='./info.png' width='32px' style="margin-left: -15px;margin-right: 5px;margin-top: -10px" />&nbsp;Note that we've chosen to have the function return HTML. We did this to keep the client code as short as possible, but is a bit uncommon. 
+<div class="alert alert-info" role="alert"><img class='alerticon' src='./info.png' width='32px' />&nbsp;Note that we've chosen to have the function return HTML. We did this to keep the client code as short as possible, but is a bit uncommon. 
 An alternative approach, which makes more sense if you have different types of clients, is to have the function return a JSON object that the clients can then parse and display. 
 <a href='./siam-orgchart-json.html' target='_blank'>Click here to see that example.</a></div>
 <p>Here's the result:</p>
@@ -99,8 +103,8 @@ An alternative approach, which makes more sense if you have different types of c
 
 <h2>What's next?</h2>
 <li>Show me <a href='./siam-orgchart-json.html' target='_blank'>the other Function example.</a></li>
-<li>I want to learn more about MongoDB's Functions.</li>
-<li>Show me how Rules can call Functions.</li>
+<li>I want to learn more about <a href='https://docs.mongodb.com/stitch/functions/' target="_blank"> Stitch Functions</a>.</li>
+<li>Show me how <a href="siam-rules-2.html">Rules can call Functions</a>.</li>
 </ul>
 </div>
 

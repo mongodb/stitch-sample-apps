@@ -11,6 +11,11 @@
 		margin-top: 7px;
 		margin-bottom: 15px;
 	}
+  .alerticon {
+   margin-left: -15px;
+   margin-right: 5px;
+   margin-top: -10px;
+  }
 </style>
 </head>
 	<body>
@@ -111,12 +116,12 @@ So, the logic flow is:
 <li>Then ask, is this employee's manager the authenticed user? If so, return true.</li>
 </ol>
 </p>
-<div class="alert alert-danger" role="alert"><img src='./alert.ico' width='32px'/>If you call a Function from a Rule, it will iterate through <b>all of the documents in the collection</b>. We're OK here because we have a very small data set, but obviously this approach doesn't scale well.</div>
+<div class="alert alert-danger" role="alert"><img class='alerticon' src='./alert.ico' width='32px'/>If you call a Function from a Rule, it will iterate through <b>all of the documents in the collection</b>. We're OK here because we have a very small data set, but obviously this approach doesn't scale well.</div>
 <h2>What's next?</h2>
 <ul>
 <li>Can I have similar behavior without the performance cost?</li>
-<li>I want to see other examples of Stitch Functions</li>
-<li>I want to learn more about writing Stitch Functions.</li>
+<li>How do I show just the <a href='siam-rules-1.html' target="_blank">data of the user who authenticates</a>?</li>
+<li>I want to learn more about <a href='https://docs.mongodb.com/stitch/rules/' target='_blank'>Stitch Rules.</a></li>
 <li>I want to start playing with my own data now.</li>
 </ul>
 </div>
