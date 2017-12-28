@@ -45,16 +45,16 @@
 <pre  class="prettyprint">
 exports = function(managerID){
   var orgChart;
-//Set up calls to Atlas
+//1. Set up calls to Atlas
   var atlas = context.services.get("mongodb-atlas");
   var empCol = atlas.db("HR").collection("employees");
 
-//Find the top of the org chart
+//2. Find the top of the org chart
   var noboss = empCol.find({"manager" : {$eq: null}}).toArray();
   noboss.forEach(function(d){
-//Build the HTML we'll return
+//3. Build the HTML we'll return
     orgChart = "&lt;ul>&lt;li>" + d.name.last + ", " + d.name.first + " (" + d.role + " - " + d.level + "): " + d.email;
-//Find the rest of the org starting with the first level of direct reports
+//4. Find the rest of the org starting with the first level of direct reports
     orgChart += getDirects(empCol, d._id);
     orgChart += "&lt;/li>&lt;/ul>";
   });
@@ -98,9 +98,9 @@ An alternative approach, which makes more sense if you have different types of c
 </div>
 
 <h2>What's next?</h2>
-<ul>
-<li>TODO</li>
-<li>I want to start playing with my own data now.</li>
+<li>Show me <a href='./siam-orgchart-json.html' target='_blank'>the other Function example.</a></li>
+<li>I want to learn more about MongoDB's Functions.</li>
+<li>Show me how Rules can call Functions.</li>
 </ul>
 </div>
 
