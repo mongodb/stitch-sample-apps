@@ -1,0 +1,144 @@
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	<style>
+	
+	iframe {
+		height: 300px;
+		width: 100%;
+		margin-top: 7px;
+		margin-bottom: 15px;
+	}
+</style>
+</head>
+	<body>
+<div class='container'>
+		<h1>Stitch in a Minute: Using Functions</h1>
+		<p>In this demo, we're going to show you how to build a Function in Stitch and call it
+    from the client. Using the HR.employees collection, we'll build an org chart to display 
+    on a page.</p>
+		<p>
+		The web page is very simple; it creates a Stitch client, connects to the service, and
+    calls a function ("buildOrgChartHtml"). The function returns a JSON object representing the
+    org chart, and the HTML page builds the HTML to display it:
+		</p>
+		<pre class="prettyprint">
+&lt;html>
+  &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  &lt;script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js">&lt;/script>
+  &lt;script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js">&lt;/script>
+ 
+  &lt;script>
+//1. Set up the Stitch client and then call the function "buildOrgChart"
+    const client = new stitch.StitchClient('stitchdocs-jdtdl');
+    const db = client.service('mongodb', 'mongodb-atlas').db('HR');
+
+    client.executeFunction("buildOrgChart").then(result => {
+//2. Using the JSON object returned from the function, build the HTML to display it.
+      // console.log(result);
+      document.getElementById('top').innerHTML = buildTree(result);
+    });
+
+  function buildTree(d) {
+    var tree = "&lt;li>" + d.name + " (" + d.title + "): " + d.email + "&lt;/li>";
+    tree += getDirects(d.directs);
+    return tree;
+  }
+
+  function getDirects(array){
+    var sub = "&lt;ul>"
+    array.forEach(function(d, index){
+      sub += "&lt;li>" + d.name + " (" + d.title + "): " + d.email + "&lt;/li>";
+//Note the recursion
+      sub += getDirects(d.directs);
+    })
+    sub += "&lt;/ul>";
+    return sub;
+  }
+  &lt;/script>
+
+  &lt;body>
+    &lt;ul id='top'>&lt;/ul>
+  &lt;/body>
+&lt;/html>
+</pre>
+<p>This page:
+<ol>
+  <li>Sets up the Stitch client and calls the <b>buildOrgChart</b> function.</li>
+  <li>Uses the JSON object that is returned and builds the HTML to display it. Note that you need to know what the JSON object looks like; one way to do that is to dump it to the dev console (i.e., <b>console.log(result);</b>)</li>
+</ol>
+<p>Note that calling a function does not require you to specify a collection. You just need
+  to know the name of the funciton you are calling.</p>
+
+<p>The function itself looks like this:
+<pre  class="prettyprint">
+exports = function(managerID){
+  var orgChart;
+
+//1. Set up calls to Atlas 
+  var atlas = context.services.get("mongodb-atlas");
+  var empCol = atlas.db("HR").collection("employees");
+
+//2. Find the top of the org chart
+  var noboss = empCol.find({"manager" : {$eq: null}}).toArray();
+  noboss.forEach(function(d){
+
+//3. Build the JSON we'll return. Start with the top and recurse our way 
+// down through the reports
+    orgChart = { "name" : d.name.last + ", " + d.name.first, "title" : d.role + " - " +
+    d.level, "email" : d.email, "directs" : getDirects(empCol, d._id) };
+  });
+  return orgChart;
+};
+
+function getDirects(empCol, me) {
+  var result = [];
+  if (me === undefined) { 
+    return result;
+  }
+  var directs = empCol.find({"manager": me}).toArray();
+
+  directs.forEach(function(d){
+    result.push({ "name" : d.name.last + ", " + d.name.first, "title" : d.role + " - " + 
+    d.level, "email" : d.email, "directs" : getDirects(empCol, d._id) });
+  });
+  return result;
+}
+</pre>
+</p>
+<p>
+  This function does the following:
+  <ol>
+    <li>Find the employee who has no manager. She is the top of the food chain.</li>
+    <li>Using her _id, find all employees who report to her (using the getDirects()) function.
+    </li>
+    <li>Repeat this process with each _id until we're done.</li>
+    <li>Return the JSON object that represents the org chart.</li>
+  </ol>
+</p>
+<div class="alert alert-info" role="alert"><img src='./info.png' width='32px' style="margin-left: -15px;margin-right: 5px;margin-top: -10px" />&nbsp;Note that we've chosen to have the function return a JSON object. This allows the function to control what data is returned (no salary data, for example!) and enables clients to control how they want to display the data. However, it requires more "work" on the client side. An alternative would be to have the function return pre-formatted HTML.  
+<a href='./siam-orgchart-2.html' target='_blank'>Click here to see that example.</a></div>
+<p>Here's the result:</p>
+<div id='livepage'>
+<iframe src="./siam-orgchart-json-code.html"></iframe>
+</div>
+
+<h2>What's next?</h2>
+<ul>
+<li><a href='./siam-crud-2.html'>I want to see another Stitch CRUD example.</a></li>
+<li>I want to learn more about MongoDB's CRUD operations.</li>
+<li>CRUD's easy; take me to the Authentication/Authorization stuff!</li>
+<li>I want to start playing with my own data now.</li>
+</ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+	</body>
+
+</html>
