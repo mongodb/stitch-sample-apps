@@ -1,0 +1,30 @@
+<pre>
+&lt;html>
+  &lt;script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js">&lt;/script>
+  &lt;script>
+    const client = new stitch.StitchClient('stitchdocs-jdtdl');
+    const db = client.service('mongodb', 'mongodb-atlas').db('HR');
+
+    client.authenticate("google").then((id) =>
+      displayEmployees();
+    ).catch(err => {
+      console.error(err)
+    });
+
+  function displayEmployees() {
+    db.collection('employees_secured2').find({}).execute().then(docs => {
+      html = docs.map(e => '&lt;tr>&lt;td>' + e.name.last + ', ' + e.name.first + '&lt;/td>' +
+        '&lt;td>' + e.email + '&lt;/td>&lt;td>' + e.role + ' - ' + e.level + '&lt;/td>&lt;td>$' + 
+        e.salary + '&lt;/td>&lt;/tr>').join('');
+      document.getElementById('employees').innerHTML = html;
+    });
+  }
+  &lt;/script>
+  &lt;body>
+    &lt;table class='table'>
+      &lt;thead>&lt;tr>&lt;th>Name&lt;/th>&lt;th>Email&lt;/th>&lt;th>Title&lt;/th>&lt;th>Salary&lt;/th>&lt;/tr>&lt;/thead>
+      &lt;tbody id='employees'>&lt;/tbody>
+    &lt;/table>
+  &lt;/body>
+&lt;/html>
+</pre>
