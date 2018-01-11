@@ -20,14 +20,10 @@
 </head>
 	<body>
 <div class='container'>
-		<h1>Stitch in a Minute: Using Functions</h1>
-		<p>In this demo, we're going to show you how to build a Function in Stitch and call it
-    from the client. Using the HR.employees collection, we'll build an org chart to display 
-    on a page.</p>
-		<p>
-		The web page is very simple; it creates a Stitch client, connects to the service, and
-    calls a function ("buildOrgChartHtml"). The function returns a JSON object representing the
-    org chart, and the HTML page builds the HTML to display it:
+		<h1>Stitch in a Minute: Using Functions, Part 2</h1>
+		<p>As an alternative to the code in <a href='siam-orgchart-html.html'>Part 1</a>, which returns HTML, we could write our Stitch Function to return a JSON object. </p>
+    <p>
+    You can see here that the HTML page is more complex, as it needs the logic to parse the JSON and create HTML to display the org chart:
 		</p>
 		<pre class="prettyprint">
 &lt;html>
@@ -42,7 +38,7 @@
 
     client.executeFunction("buildOrgChart").then(result => {
 //2. Using the JSON object returned from the function, build the HTML to display it.
-      // console.log(result);
+//Note: console.log(result); is a useful way to see the data returned from Stitch
       document.getElementById('top').innerHTML = buildTree(result);
     });
 
@@ -72,12 +68,12 @@
 <p>This page:
 <ol>
   <li>Sets up the Stitch client and calls the <b>buildOrgChart</b> function.</li>
-  <li>Uses the JSON object that is returned and builds the HTML to display it. Note that you need to know what the JSON object looks like; one way to do that is to dump it to the dev console (i.e., <b>console.log(result);</b>)</li>
+  <li>Uses the JSON object that is returned and builds the HTML to display it. Note that you need to know what the JSON object looks like before you can build the HTML; one way to do that is to dump it to the dev console (i.e., <b>console.log(result);</b>)</li>
 </ol>
-<p>Note that calling a function does not require you to specify a collection. You just need
-  to know the name of the funciton you are calling.</p>
+<div class="alert alert-info" role="alert"><img class='alerticon' src='./info.png' width='32px'/>&nbsp;Note that calling a function does not require you to specify a collection. You just need
+  to know the name of the function you are calling.</div>
 
-<p>The function itself looks like this:
+<p>The function itself is very similar to the previous function, but no longer includes the logic to build the HTML. It looks like this:
 <pre  class="prettyprint">
 exports = function(managerID){
   var orgChart;
@@ -113,18 +109,6 @@ function getDirects(empCol, me) {
 }
 </pre>
 </p>
-<p>
-  This function does the following:
-  <ol>
-    <li>Find the employee who has no manager. She is the top of the food chain.</li>
-    <li>Using her _id, find all employees who report to her (using the getDirects()) function.
-    </li>
-    <li>Repeat this process with each _id until we're done.</li>
-    <li>Return the JSON object that represents the org chart.</li>
-  </ol>
-</p>
-<div class="alert alert-info" role="alert"><img class='alerticon' src='./info.png' width='32px' style="margin-left: -15px;margin-right: 5px;margin-top: -10px" />&nbsp;Note that we've chosen to have the function return a JSON object. This allows the function to control what data is returned (no salary data, for example!) and enables clients to control how they want to display the data. However, it requires more "work" on the client side. An alternative would be to have the function return pre-formatted HTML.  
-<a href='./siam-orgchart-html.html' target='_blank'>Click here to see that example.</a></div>
 <p>Here's the result:</p>
 <div id='livepage'>
 <iframe src="./siam-orgchart-json-code.html"></iframe>
@@ -132,6 +116,7 @@ function getDirects(empCol, me) {
 
 <h2>What's next?</h2>
 <ul>
+<li><b>Recommended:</b> I'm ready to learn about third-party<a href='siam-google.html'> Authentication in Stitch</a>.</li>
 <li>Show me <a href='./siam-orgchart-html.html' target='_blank'>the other Function example.</a></li>
 <li>I want to learn more about <a href='https://docs.mongodb.com/stitch/functions/' target="_blank"> Stitch Functions</a>.</li>
 <li>Show me how <a href="siam-rules-2.html">Rules can call Functions</a>.</li>

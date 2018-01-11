@@ -20,13 +20,12 @@
 </head>
 	<body>
 <div class='container'>
-		<h1>Stitch in a Minute: Using Functions</h1>
+		<h1>Stitch in a Minute: Using Functions, Part 1</h1>
 		<p>In this demo, we're going to show you how to build a Function in Stitch and call it
-    from the client. Using the HR.employees collection, we'll build an org chart to display 
-    on a page.</p>
+    from the client. Using the same <i>employees</i> collection, we'll build an org chart and display it on the page.</p>
 		<p>
-		The web page is very simple; it creates a Stitch client, connects to the service, and
-    calls a function ("buildOrgChartHtml"), setting the results of the function as the HTML of the body:
+		As yo can see here, the web page is very simple; it creates a Stitch client, connects to the service, and
+    calls a function ("buildOrgChartHtml"). When Stitch returns the data, we set the results as the HTML of the body:
 		</p>
 		<pre class="prettyprint">
 &lt;html>
@@ -44,8 +43,8 @@
 &lt;/html>
 </pre>
 <p>Note that calling a function does not require you to specify a collection. You just need
-  to know the name of the funciton you are calling.</p>
-<p>The function itself looks like this:
+  to know the name of the function you are calling.</p>
+<p>The function itself is plain old Javascript, and looks like this:
 <pre  class="prettyprint">
 exports = function(managerID){
   var orgChart;
@@ -53,12 +52,12 @@ exports = function(managerID){
   var atlas = context.services.get("mongodb-atlas");
   var empCol = atlas.db("HR").collection("employees");
 
-//2. Find the top of the org chart
+//2. Find the top of the org chart - the employee with no manager
   var noboss = empCol.find({"manager" : {$eq: null}}).toArray();
   noboss.forEach(function(d){
-//3. Build the HTML we'll return
+//3. Start building the HTML we'll return
     orgChart = "&lt;ul>&lt;li>" + d.name.last + ", " + d.name.first + " (" + d.role + " - " + d.level + "): " + d.email;
-//4. Find the rest of the org starting with the first level of direct reports
+//4. Find the rest of the employees, starting with the first level of direct reports
     orgChart += getDirects(empCol, d._id);
     orgChart += "&lt;/li>&lt;/ul>";
   });
@@ -74,7 +73,7 @@ function getDirects(empCol, me) {
   if (directs.length > 1) {
     directs.forEach(function(d){
       result += "&lt;ul>&lt;li>" + d.name.last + ", " + d.name.first + " (" + d.role + " - " + d.level + "): " + d.email;
-//Let's use recursion for fun and profit!
+//Let's use recursion to get each layer of the organization!
       result += getDirects(empCol, d._id);
       result += "&lt;/li>&lt;/ul>";
     });
@@ -102,7 +101,7 @@ An alternative approach, which makes more sense if you have different types of c
 </div>
 
 <h2>What's next?</h2>
-<li>Show me <a href='./siam-orgchart-json.html' target='_blank'>the other Function example.</a></li>
+<li><b>Recommended:</b> Show me <a href='./siam-orgchart-json.html'>the other approach to this Function example.</a></li>
 <li>I want to learn more about <a href='https://docs.mongodb.com/stitch/functions/' target="_blank"> Stitch Functions</a>.</li>
 <li>Show me how <a href="siam-rules-2.html">Rules can call Functions</a>.</li>
 </ul>

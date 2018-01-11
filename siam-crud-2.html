@@ -23,7 +23,7 @@
 	<body>
 <div class='container'>
 		<h1>Stitch in a Minute: Upserting Data to Atlas</h1>
-		<p>Let's update the <a href='siam1.html'>web page we used previously</a> to insert some data to the employee collection.</p>
+		<p>Let's update the <a href='siam-crud-1.html'>web page we used previously</a> to insert some data to the employee collection.</p>
 		<p>
 		Take a look at the following HTML page:
 		</p>
@@ -41,17 +41,16 @@
     });
 
   function displayEmployees() {
-//Insert a new employee
-    db.collection('employees').insertOne(
-      {
-        'name' : {'first' : 'Robert', 'last' : 'Zimmerman'}, 
-        'role' : 'Songwriter', 
-        'level' : 'Senior',
-        'email' : 'bobdylan@msc.co',
-        'salary' : (1000000 * Math.random()).toFixed(0)
-    }).then(()=>
-//Filter the find to return only employees with the same last name
-    db.collection('employees').find({'name.last' : 'Zimmerman'}).execute().then(docs => {
+//Update an existing employee
+  db.collection('employees').updateOne(
+    { 'email' : 'hucejte@wuava.pk' },
+    {
+       $set: {'salary' : (100000 * Math.random()).toFixed(0)}
+    },
+    { upsert:true}
+    ).then(()=>
+//Filter the find to return only the employee we updated
+    db.collection('employees').find({'email' : 'hucejte@wuava.pk'}).execute().then(docs => {
       html = docs.map(e => '&lt;tr>&lt;td>' + e.name.last + ', ' + e.name.first + '&lt;/td>' +
         '&lt;td>' + e.email + '&lt;/td>&lt;td>' + e.role + ' - ' + e.level + '&lt;/td>' +
         '&lt;td>$' + e.salary + '&lt;/td>&lt;/tr>').join('');
@@ -69,23 +68,22 @@
 </pre>
 <p>This is the same page as our <a href='siam1.html'>previous example</a>, except:
 <ol>
-	<li>We're adding a new employee</li>
+	<li>We're updating the salary for an existing employee by replacing it with a random number.</li>
 	<li>We're showing only that employee in the result.</li>
 </ol>
 
-You can copy this code and paste it into an empty text file, and then save the file as an HTML file (for example, as "stitch.html"). When you open the file in a browser (with an internet connection), you will see a table that lists employees with the last name "Zimmerman", like this:</p>
+Each time you refresh this page, you will see the salary change:</p>
 <div id='livepage'>
 <iframe src="./siam-crud-2-code.html"></iframe>
 </div>
-
-<p> Each time you refresh the page... </p>
-<div class="alert alert-danger" role="alert"><img class='alerticon' src='./alert.ico' width='32px'/>You may have already noticed a major problem here:<br/> You are an <strong>anonymous user</strong> adding rather sensitive personal information to a remote database! By default, Stitch restricts what you can and can't do; we've overridden those rules to 
-keep this example as simple as possible. As you work through the <a href='#' class="alert-link">Stitch examples</a>, you'll learn about authentication and authorization.</div>
+<div class="alert alert-danger" role="alert"><img class='alerticon' src='./alert.ico' width='32px'/>You may have already noticed a major problem here:<br/> You are an <strong>anonymous user</strong> viewing changing rather sensitive personal information in a remote database! By default, Stitch restricts what you can and can't do; we've overridden those rules to 
+keep this example as simple as possible. As you work through these Stitch examples, you'll learn about authentication and authorization.</div>
 <h2>What's next?</h2>
 <ul>
-<li>I want to learn more about MongoDB's CRUD operations.</li>
-<li>CRUD's easy; take me to the Authentication/Authorization stuff!</li>
-<li>I want to <a href='http://stitch.mongodb.com'>start playing with my own data </a>now.</li>
+<li><b>Recommended: </b>I've seen enough CRUD, and this security issue is bothering me. <a href='siam-rules-1.html'> Let's fix it.</a></li>
+<li>I want to learn more about <a href='https://docs.mongodb.com/manual/crud/' target='_blank'>MongoDB's CRUD operations</a>.</li>
+<li>CRUD is easy; take me to the <a href='https://docs.mongodb.com/stitch/authentication/' target='_blank'>Authentication docs</a>!</li>
+<li>I want to <a href='http://stitch.mongodb.com'>start playing with my own data </a>in Stitch.</li>
 </ul>
 </div>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

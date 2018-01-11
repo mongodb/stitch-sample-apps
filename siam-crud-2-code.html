@@ -13,17 +13,16 @@
     });
 
   function displayEmployees() {
-//Insert a new employee
-    db.collection('employees').insertOne(
-      {
-        'name' : {'first' : 'Robert', 'last' : 'Zimmerman'}, 
-        'role' : 'Songwriter', 
-        'level' : 'Senior',
-        'email' : 'bobdylan@msc.co',
-        'salary' : (1000000 * Math.random()).toFixed(0)
-    }).then(()=>
-//Filter the find to return only employees with the same last name
-    db.collection('employees').find({'name.last' : 'Zimmerman'}).execute().then(docs => {
+//Update an existing employee
+  db.collection('employees').updateOne(
+    { 'email' : 'hucejte@wuava.pk' },
+    {
+       $set: {'salary' : (100000 * Math.random()).toFixed(0)}
+    },
+    { upsert:true}
+    ).then(()=>
+//Filter the find to return only the employee we updated
+    db.collection('employees').find({'email' : 'hucejte@wuava.pk'}).execute().then(docs => {
       html = docs.map(e => '<tr><td>' + e.name.last + ', ' + e.name.first + '</td>' +
         '<td>' + e.email + '</td><td>' + e.role + ' - ' + e.level + '</td><td>$' + 
         e.salary + '</td></tr>').join('');

@@ -4,8 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/popper.min.js"></script>
-	<style>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>	
+<style>
 	iframe {
 		height: 300px;
 		width: 100%;
@@ -22,14 +24,14 @@
 <body>
 <div class='container'>
 		<h1>Stitch in a Minute: Third-Party Authentication</h1>
-		<p>Let's look at how to set up Google Authentication with your Stitch app. There are 3 steps to the process:</p>
+		<p>Stitch supports several authentication methods, including hooking into third-party authentication providers, like <a href='https://docs.mongodb.com/stitch/auth/facebook-auth/' target='_blank'>Facebook</a> and <a href='https://docs.mongodb.com/stitch/auth/google-auth/' target='_blank'>Google</a>. The steps to configure third-party authentication are a bit more complicated, but using these methods is relatively straight-forward. Let's look at how to set up Google Authentication with your Stitch app. There are 3 steps to the process:</p>
 		<ol>
     	<li>Create the Google OAuth client credentials. Click <a href="https://docs.mongodb.com/stitch/auth/google-auth/">here</a> for more information.</li>
-    	<li>In your Stitch app, enable the Google Auth provider.</li>
+    	<li>In your Stitch app, enable the <b>Google</b> Auth provider.</li>
       <li>Configure any rules, filters, or functions to make use of the information you get from the Google OAuth token. </li>
     </ol>
 
-<p>From a code perspective, the changes are very minor. Let's update the <a href="siam-rules-2.html">data view we built previously</a> to use Google Auth, like this:</p>
+<p>From a code perspective, the changes are very minor. Let's update the <a href="siam-rules-2.html">data view we built previously</a> to use Google Auth by replacing the client.login() method call with a call to client.authenticate(), like this:</p>
 <pre class="prettyprint">
 //Email auth method:
 client.login('dafu@bufudlur.et', 'sekritpwd').then((userId) =>
@@ -45,7 +47,7 @@ client.authenticate("google").then((id) =>
 </pre>
 <p>As you can see, the difference in code is very small: instead of calling <b>login()</b>, you call <b>authenticate()</b> and specify the authentication provider. No other code changes are needed.</p>
 <p>
-  So why does this work? When the Google OAuth token is sent to Stitch, it includes the user's name and email. Our existing rule filters the incoming data by the authenticated user's email:
+  So why does this work? When the Google OAuth token is sent to Stitch, it includes the user's name and email. You might recall that our existing rule on this collection filters the incoming data by the authenticated user's email:
 <pre class="prettyprint">
 {
   "%or": [
@@ -65,16 +67,23 @@ client.authenticate("google").then((id) =>
   ]
 }
 </pre>
-So, as long as the email in our collection matches the email used to authenticate with Google, the employee will see her information as well as that of her direct reports. Here's an example where the Lead PM, Aubrey Clark, has authenticated using her gmail account and gets the correct data returned to her:
+So, as long as the email in our collection matches the email used to authenticate with Google, the employee will see her information as well as that of her direct reports. 
+
+Here's an example where the Lead PM, Aubrey Clark, has authenticated using her gmail account (quick.stitch.demo@gmail.com) and gets the correct data returned to her:
 </p>
 <div id='livepage'>
-<iframe src="https://stitch-demo.herokuapp.com/"></iframe>
+<div>
+  <table class="table table-bordered">
+      <thead><tr><th>Name</th><th>Email</th><th>Title</th><th>Salary</th></tr></thead>
+      <tbody id="employees"><tr><td>Robinson, Elijah</td><td>miszo@to.cw</td><td>PM - I</td><td>$156397</td></tr><tr><td>Hill, Caleb</td><td>coh@enzo.ki</td><td>PM - II</td><td>$97459</td></tr><tr><td>King, Elizabeth</td><td>jemdivdus@zaj.by</td><td>PM - I</td><td>$183341</td></tr><tr><td>Hill, Owen</td><td>dow@couse.net</td><td>PM - I</td><td>$127635</td></tr><tr><td>Jones, Sofia</td><td>hucejte@wuava.pk</td><td>PM - II</td><td>$193015</td></tr><tr><td>Clarke, Aubrey</td><td>quick.stitch.demo@gmail.com</td><td>PM - Lead</td><td>$59739</td></tr><tr><td>Robinson, James</td><td>muzfeh@iccer.ie</td><td>PM - I</td><td>$167600</td></tr><tr><td>Davies, Luke</td><td>kuh@zapalo.as</td><td>PM - Senior</td><td>$182983</td></tr><tr><td>James, Henry</td><td>fezbo@avjav.bn</td><td>PM - II</td><td>$173736</td></tr></tbody>
+    </table>
+</div>
 </div>
 
 <h2>What's next?</h2>
 <ul>
 <li>I want to see the details about setting up <a href="https://docs.mongodb.com/stitch/auth/google-auth/">Google Authentication</a>.</li>
-<li>I want to see <a href='siam-google-code.html'>the code for this example</a>.</li>
+<li>I want to see <a href='siam-google-code.html'>the HTML code for this example</a>.</li>
 <li>I want to read about other <a href="https://docs.mongodb.com/stitch/authentication/">authentication methods</a>.</li>
 <li>I want to <a href='http://stitch.mongodb.com'>start playing with my own data </a>now.</li>
 </ul>

@@ -3,6 +3,9 @@
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>  
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<style>
 	iframe {
@@ -22,9 +25,10 @@
 	<body>
 <div class='container'>
 		<h1>Stitch in a Minute: Reading Data from Atlas</h1>
-		<p>The easiest way to get started with Stitch is to read some sample data from a MongoDB database. We've created some sample employee data in an Atlas db. And while Stitch includes drivers for <a href='#'>many platforms and languages</a>, for now we'll build a simple Web page to display the employee data.</p>
+		<p>The easiest way to get started with Stitch is to read some sample data from a MongoDB database. We've created some sample employee data in an <a href='https://cloud.mongodb.com/' target="_blank">Atlas</a> database. And while Stitch includes drivers for many platforms and languages, for now we'll build a simple Javascript page to display the employee data.
+    </p>
 		<p>
-		Take a look at the following HTML page:
+		Take a look at the following HTML:
 		</p>
 		<pre class="prettyprint">
 &lt;html>
@@ -62,7 +66,7 @@
   &lt;/body>
 &lt;/html>
 </pre>
-<p>As you read through the comments, you'll see that there are 4 basic steps:
+<p>As you read through the code comments, you'll see that there are 4 basic steps:
 <ol>
 	<li>Add the Stitch JavaScript driver to the page</li>
 	<li>Create a client object and initialize it.</li>
@@ -75,13 +79,13 @@ You can copy this code and paste it into an empty text file, and then save the f
 <iframe src="./siam-crud-1-code.html"></iframe>
 </div>
 <div class="alert alert-danger" role="alert"><img class='alerticon' src='./alert.ico' width='32px'/>You may have already noticed a major problem here:<br/> You are an <strong>anonymous user</strong> viewing rather sensitive personal information! By default, Stitch restricts what you can and can't see; we've overridden those rules to 
-keep this example as simple as possible. As you work through the <a href='#' class="alert-link">Stitch examples</a>, you'll learn about authentication and authorization.</div>
+keep this example as simple as possible. As you work through other Stitch examples, you'll learn about authentication and authorization.</div>
 <h2>What's next?</h2>
 <ul>
-<li><a href='./siam-crud-2.html'>I want to see another Stitch CRUD example.</a></li>
-<li>I want to learn more about MongoDB's CRUD operations.</li>
-<li>CRUD's easy; take me to the Authentication/Authorization stuff!</li>
-<li>I want to <a href='http://stitch.mongodb.com'>start playing with my own data </a>now.</li>
+<li><b>Recommended:</b> <a href='./siam-crud-2.html'>I want to see another Stitch CRUD example.</a></li>
+<li>I want to learn more about <a href='https://docs.mongodb.com/manual/crud/' target='_blank'>MongoDB's CRUD operations</a>.</li>
+<li>CRUD is easy; take me to the <a href='https://docs.mongodb.com/stitch/authentication/' target='_blank'>Authentication docs</a>!</li>
+<li>I want to <a href='http://stitch.mongodb.com'>start playing with my own data </a>in Stitch.</li>
 </ul>
 </div>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

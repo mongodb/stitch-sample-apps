@@ -60,22 +60,21 @@
 </pre>
 <p>This is the same page as our first <a href='siam-crud-1.html'>CRUD example</a>, except for two changes:
   <ol>
-  <li>When we call client.login(), we're passing in an email and password. This is because we have enabled Email/Password authentication on the HR database.</li>
-  <li>We are accessing a different collection, called <i>employees_secured</i>. It has exactly the same data as the <i>employees</i> collection.</li>
-</ol>
-</p>
-<div id='livepage'>
-<iframe src="./siam-rules-1-code.html"></iframe>
-</div>
-<p>As you can see, the amount of data you can now view is restricted to the user's own personal information. So what's different? We added a Top Level Document Rule to this collection that prevents the requesting user from seeing anything but her own data:</p>
+  <li>When we call client.login(), we're passing in an email and password. We have enabled Email/Password authentication on the HR database, and want to know who is requesting the data now.</li>
+  <li>We are accessing a different collection, called <i>employees_secured</i>. It has exactly the same data as the <i>employees</i> collection, but we added a Top Level Document Rule to this collection that prevents the requesting user from seeing anything but her own data:</p>
 <pre class="prettyprint">
   {
     "%%root.email": "%%user.data.email"
-  }
-</pre>
+  } </pre>
+</li>
+</ol>
+<p>As you can see, the amount of data you can now view is restricted to the user's own personal information:</p>
+<div id='livepage'>
+<iframe src="./siam-rules-1-code.html"></iframe>
+</div>
 <h2>What's next?</h2>
 <ul>
-<li>That's pretty cool...but what if a manager wants to <a href='siam-rules-2.html'>see her direct reports</a>, too?</li>
+<li><b>Recommended:</b> That's pretty cool...but what if a manager wants to <a href='siam-rules-2.html'>see her direct reports</a>, too?</li>
 <li>I want to learn more about <a href='https://docs.mongodb.com/stitch/rules/' target='_blank'>Stitch Rules.</a></li>
 <li>I want to <a href='http://stitch.mongodb.com'>start playing with my own data </a>now.</li>
 </ul>
