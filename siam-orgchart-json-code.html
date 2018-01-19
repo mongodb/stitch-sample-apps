@@ -1,18 +1,21 @@
 <html>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>	
-  <script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"></script>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
- 
-  <script>
-    const client = new stitch.StitchClient('stitchdocs-jdtdl');
-    const db = client.service('mongodb', 'mongodb-atlas').db('HR');
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+  crossorigin="anonymous"></script>
+<script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 
-    client.executeFunction("buildOrgChart").then(result => {
-      document.getElementById('top').innerHTML = buildTree(result);
-    });
+<script>
+  const client = new stitch.StitchClient('stitchdocs-jdtdl');
+  const db = client.service('mongodb', 'mongodb-atlas').db('HR');
+
+  client.executeFunction("buildOrgChart").then(result => {
+    document.getElementById('top').innerHTML = buildTree(result);
+  });
 
   function buildTree(d) {
     var tree = "<li>" + d.name + " (" + d.title + "): " + d.email + "</li>";
@@ -20,18 +23,19 @@
     return tree;
   }
 
-  function getDirects(array){
+  function getDirects(array) {
     var sub = "<ul>"
-    array.forEach(function(d, index){
+    array.forEach(function (d, index) {
       sub += "<li>" + d.name + " (" + d.title + "): " + d.email + "</li>";
       sub += getDirects(d.directs);
     })
     sub += "</ul>";
     return sub;
   }
-  </script>
+</script>
 
-  <body>
-    <ul id='top'></ul>
-  </body>
+<body>
+  <ul id='top'></ul>
+</body>
+
 </html>

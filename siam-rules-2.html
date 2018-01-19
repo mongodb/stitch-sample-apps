@@ -1,34 +1,41 @@
 <html>
+
 <head>
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>	
-	<style>
-	iframe {
-		height: 300px;
-		width: 100%;
-		margin-top: 7px;
-		margin-bottom: 15px;
-	}
-  .alerticon {
-   margin-left: -15px;
-   margin-right: 5px;
-   margin-top: -10px;
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
+    crossorigin="anonymous"></script>
+  <style>
+    iframe {
+      height: 300px;
+      width: 100%;
+      margin-top: 7px;
+      margin-bottom: 15px;
+    }
+
+    .alerticon {
+      margin-left: -15px;
+      margin-right: 5px;
+      margin-top: -10px;
+    }
+  </style>
 </head>
-	<body>
-<div class='container'>
-		<h1>Stitch in a Minute: Using Rules and Functions to Secure Data</h1>
-		<p>Let's update the web page we used in the <a href='siam-rules-1.html'>Rules example</a> to see how calling a Stitch Function from a Rule enables you to customize the data returned.</p>
-		<p>
-		Take a look at the following HTML page:
-		</p>
-		<pre class="prettyprint">
+
+<body>
+  <div class='container'>
+    <h1>Stitch in a Minute: Using Rules and Functions to Secure Data</h1>
+    <p>Let's update the web page we used in the
+      <a href='siam-rules-1.html'>Rules example</a> to see how calling a Stitch Function from a Rule enables you to customize the data returned.</p>
+    <p>
+      Take a look at the following HTML page:
+    </p>
+    <pre class="prettyprint">
 &lt;html>
   &lt;script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js">&lt;/script>
   &lt;script>
@@ -60,8 +67,11 @@
   &lt;/body>
 &lt;/html>
 </pre>
-<p>This is the same page as our <a href='siam-crud-1.html'>Rules example</a>, except we are accessing a different collection, called <i>employees_secured2</i>. It has exactly the same data as the <i>employees_secured</i> collection, but has a different Top Level Document Rule:
-<pre class="prettyprint">
+    <p>This is the same page as our
+      <a href='siam-crud-1.html'>Rules example</a>, except we are accessing a different collection, called
+      <i>employees_secured2</i>. It has exactly the same data as the
+      <i>employees_secured</i> collection, but has a different Top Level Document Rule:
+      <pre class="prettyprint">
   {
   "%or": [
     {
@@ -79,15 +89,17 @@
     }
   ]
 }
-</pre>
-This Rule returns <b>true</b> for each document in the collection if either of these two conditions are met:
-<ul>
-  <li>The email used to authenticate matches the email in the document, or</li>
-  <li>the function <b>doesEmpReportTo()</b> returns <b>true</b>.</li>
-</ul>
-</p>
-<p>Let's take a look at that function now:
-<pre class="prettyprint">
+</pre> This Rule returns
+      <b>true</b> for each document in the collection if either of these two conditions are met:
+      <ul>
+        <li>The email used to authenticate matches the email in the document, or</li>
+        <li>the function
+          <b>doesEmpReportTo()</b> returns
+          <b>true</b>.</li>
+      </ul>
+    </p>
+    <p>Let's take a look at that function now:
+      <pre class="prettyprint">
 exports = function(empEmail) {
   var atlas = context.services.get("mongodb-atlas");
   var empCol = atlas.db("HR").collection("employees_secured2");
@@ -101,29 +113,39 @@ exports = function(empEmail) {
   if (isDirectReport > 0) return true;
   return false;
 };
-</pre>
-So, the logic flow is:
-<ol>
-<li>For each document in the collection, run the Function.</li>
-<li>Get the manager's ID by finding the document that matches the manager's email.</li>
-<li>Then ask, is this employee's manager the authenticed user? If so, return true.</li>
-</ol>
-The result looks like the following: a table that includes the manager and all of her direct reports:
-<div id='livepage'>
-<iframe src="./siam-rules-2-code.html"></iframe>
-</div>
+</pre> So, the logic flow is:
+      <ol>
+        <li>For each document in the collection, run the Function.</li>
+        <li>Get the manager's ID by finding the document that matches the manager's email.</li>
+        <li>Then ask, is this employee's manager the authenticed user? If so, return true.</li>
+      </ol>
+      The result looks like the following: a table that includes the manager and all of her direct reports:
+      <div id='livepage'>
+        <iframe src="./siam-rules-2-code.1.html" id="demoIframe"></iframe>
+      </div>
 
 
-</p>
-<div class="alert alert-danger" role="alert"><img class='alerticon' src='./alert.ico' width='32px'/>If you call a Function from a Rule, it will iterate through <b>all of the documents in the collection</b>. We're OK here because we have a very small data set, but obviously this approach doesn't scale well.</div>
-<h2>What's next?</h2>
-<ul>
-<li><b>Recommended:</b> I'd like to see another example of <a href='siam-orgchart-html.html'>Stitch Functions</a>.</li>
-<li>I want to learn more about <a href='https://docs.mongodb.com/stitch/rules/' target='_blank'>Stitch Rules.</a></li>
-<li>I want to <a href='http://stitch.mongodb.com'>start playing with my own data </a>now.</li>
-</ul>
-</div>
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    </p>
+    <div class="alert alert-danger" role="alert">
+      <img class='alerticon' src='./alert.ico' width='32px' />If you call a Function from a Rule, it will iterate through
+      <b>all of the documents in the collection</b>. We're OK here because we have a very small data set, but obviously this
+      approach doesn't scale well.</div>
+    <h2>What's next?</h2>
+    <ul>
+      <li>
+        <b>Recommended:</b> I'd like to see another example of
+        <a href='siam-orgchart-html.html'>Stitch Functions</a>.</li>
+      <li>I want to learn more about
+        <a href='https://docs.mongodb.com/stitch/rules/' target='_blank'>Stitch Rules.</a>
+      </li>
+      <li>I want to
+        <a href='http://stitch.mongodb.com'>start playing with my own data </a>now.</li>
+    </ul>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+    crossorigin="anonymous"></script>
 </body>
+
 </html>
