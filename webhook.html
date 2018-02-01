@@ -1,0 +1,67 @@
+<html>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>	
+  <script src="https://s3.amazonaws.com/stitch-sdks/js/library/v2/stable/stitch.min.js"></script>
+  <script>
+    const client = new stitch.StitchClient('stitchdocs-jdtdl');
+    const db = client.service('mongodb', 'mongodb-atlas').db('StitchDocs');
+
+    client.login().then(() =>
+      getLatestRepoLogs()
+    ).catch(err => {
+      console.error(err)
+    });
+
+  function getLatestRepoLogs() {
+    db.collection('repologs').find({}).sort({"timestamp": -1})
+      .execute()
+      .then(docs => {
+        console.log(docs)
+
+        html = docs.map(e => '<tr><td>' + e.timestamp + '</td>' +
+          '<td><a href="'+ e.payload.sender.html_url +'" target="_blank"><img src="'+ e.payload.sender.avatar_url +
+           '" width="32">&nbsp;' + e.payload.sender.login + '</a></td><td>'+ mapKeysToType(e) +'</td></tr>').join('');
+        document.getElementById('logs').innerHTML = html;
+      });
+  }
+
+  function mapKeysToType(doc){
+    var keySig = Object.keys(doc.payload).sort().join('-');
+    console.log(keySig)
+    return mapping[keySig] ? mapping[keySig] : "Other Event";
+  }
+
+  var mapping = {
+    "action-comment-organization-repository-sender": "Commit Comment Event",
+    "description-master_branch-organization-pusher_type-ref-ref_type-repository-sender": "Create Event",
+    "pusher_type-ref-ref_type-repository-sender": "Delete Event",
+    "deployment-repository-sender": "Deployment Event",
+    "deployment-deployment_status-repository-sender": "Deployment Status Event",
+    "forkee-repository-sender": "Fork Event",
+    "pages-repository-sender": "Gollum Event",
+    "action-comment-issue-repository-sender": "Issue Comment Event",
+    "action-issue-repository-sender": "Issues Event",
+    "action-member-repository-sender": "Member Event",
+    "action-member-organization-scope-sender-team": "Membership Event",
+    "build-id-repository-sender": "Page Build Event",
+    "repository-sender": "Public Event",
+    "action-number-organization-pull_request-repository-sender": "Pull Request Event",
+    "after-base_ref-before-commits-compare-created-deleted-forced-head_commit-organization-pusher-ref-repository-sender": "Push Event",
+    "action-release-repository-sender": "Release Event",
+    "action-organization-repository-sender": "Repository Event",
+    "branches-commit-context-created_at-description-id-name-repository-sender-sha-state-target_url-updated_at": "Status Event",
+    "organization-repository-sender-team": "Team Add Event",
+    "action-repository-sender": "Watch Event"
+  }
+  </script>
+  <body>
+    <table class='table'>
+      <thead><tr><th>Timestamp</th><th>Sender</th><th>Action</th></tr></thead>
+      <tbody id='logs'></tbody>
+    </table>
+  </body>
+</html>
+
+<!---->
